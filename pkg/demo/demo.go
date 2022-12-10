@@ -1,21 +1,3 @@
-# plot4tview
-Plots for [tview](github.com/rivo/tview).
-
-Set of UI primitives that I was missing from [tview](github.com/rivo/tview) project.
-
-![Screenshot](images/main.gif)
-
-# Installation
-
-```bash
-go get github.com/jszczuko/plot4tview
-```
-
-# Demo
-
-You can find [source file](pkg/demo/demo.go) and [test data] (pkg/demo/test_data.txt) in demo package.
-
-```go
 package main
 
 import (
@@ -58,20 +40,16 @@ func main() {
 		data = append(data, point)
 		index++
 	}
-
 	p := gui.NewPlot()
 	bp := gui.NewBarPlot()
 	dp := gui.NewDotPlot()
 
-	
 	p.SetXAxisText("Time", 0)
 	p.SetYAxisText("% of memory", 1)
 
-	
 	bp.SetXAxisText("Time", 0)
 	bp.SetYAxisText("% of CPU", 1)
 
-	
 	dp.SetXAxisText("Time", 0)
 	dp.SetYAxisText("% of CPU", 1)
 
@@ -79,9 +57,27 @@ func main() {
 	start := 0
 	stop := 190
 
-	p.SetData(data[start:stop])
-	bp.SetData(data[start:stop])
-	dp.SetData(data[start:stop])
+	go func() {
+		time.Sleep(3 * time.Second)
+		p.SetData(data[start:stop])
+		bp.SetData(data[start:stop])
+		dp.SetData(data[start:stop])
+		time.Sleep(2 * time.Second)
+		for {
+			time.Sleep(500 * time.Millisecond)
+			if stop < maxEnd {
+				start++
+				stop++
+			} else {
+				return
+			}
+			app.QueueUpdateDraw(func() {
+				p.SetData(data[start:stop])
+				bp.SetData(data[start:stop])
+				dp.SetData(data[start:stop])
+			})
+		}
+	}()
 
 	flex := tview.NewFlex().SetDirection(tview.FlexRow).
 		AddItem(bp.SetPlotTite(" Bar Plot ").SetPlotBorder(true), 0, 1, false).
@@ -93,4 +89,3 @@ func main() {
 		panic(err)
 	}
 }
-```
