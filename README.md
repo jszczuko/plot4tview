@@ -1,7 +1,7 @@
 # plot4tview
-Plots for [tview](github.com/rivo/tview).
+Plots for [tview](https://github.com/rivo/tview).
 
-Set of UI primitives that I was missing from [tview](github.com/rivo/tview) project.
+Set of UI primitives that I was missing from [tview](https://github.com/rivo/tview) project.
 
 ![Screenshot](images/main.gif)
 
