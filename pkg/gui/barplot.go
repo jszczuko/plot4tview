@@ -21,6 +21,7 @@ type BarPlot struct {
 	xaxisAligment int
 	yaxisText     string
 	yaxisAligment int
+	noDataText    string
 }
 
 func NewBarPlot() *BarPlot {
@@ -39,9 +40,14 @@ func NewBarPlot() *BarPlot {
 		yaxis2String: func(value float64) string {
 			return fmt.Sprintf("%-6.2f", value)
 		},
-		xaxisText: "",
-		yaxisText: "",
+		xaxisText:  "",
+		yaxisText:  "",
+		noDataText: "No Data...",
 	}
+}
+
+func (plot *BarPlot) SetNoDataText(text string) {
+	plot.noDataText = text
 }
 
 func (plot *BarPlot) SetXAxisText(text string, aligment int) {
@@ -140,6 +146,10 @@ func (plot *BarPlot) Draw(screen tcell.Screen) {
 	pointsHeight := ph
 	plot.drawPoints(screen, pointsX, pointsY, pointsWidth, pointsHeight)
 
+	if len(plot.data) == 0 {
+		xD, yD, widthD, heightD := plot.GetInnerRect()
+		tview.Print(screen, plot.noDataText, xD-len(plot.noDataText)+widthD/2, yD-2+heightD/2, 20, tview.AlignCenter, tcell.ColorRed)
+	}
 }
 
 func (plot *BarPlot) drawPoints(screen tcell.Screen, x int, y int, width int, height int) {

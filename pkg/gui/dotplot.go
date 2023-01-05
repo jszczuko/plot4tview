@@ -21,6 +21,7 @@ type DotPlot struct {
 	xaxisAligment int
 	yaxisText     string
 	yaxisAligment int
+	noDataText    string
 }
 
 func NewDotPlot() *DotPlot {
@@ -39,9 +40,14 @@ func NewDotPlot() *DotPlot {
 		yaxis2String: func(value float64) string {
 			return fmt.Sprintf("%-6.2f", value)
 		},
-		xaxisText: "",
-		yaxisText: "",
+		xaxisText:  "",
+		yaxisText:  "",
+		noDataText: "No Data...",
 	}
+}
+
+func (plot *DotPlot) SetNoDataText(text string) {
+	plot.noDataText = text
 }
 
 func (plot *DotPlot) SetXAxisText(text string, aligment int) {
@@ -141,6 +147,11 @@ func (plot *DotPlot) Draw(screen tcell.Screen) {
 	pointsWidth := pw
 	pointsHeight := ph
 	plot.drawPoints(screen, pointsX, pointsY, pointsWidth, pointsHeight)
+
+	if len(plot.data) == 0 {
+		xD, yD, widthD, heightD := plot.GetInnerRect()
+		tview.Print(screen, plot.noDataText, xD-len(plot.noDataText)+widthD/2, yD-2+heightD/2, 20, tview.AlignCenter, tcell.ColorRed)
+	}
 
 }
 
