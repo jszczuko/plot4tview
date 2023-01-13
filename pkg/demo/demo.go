@@ -27,7 +27,7 @@ func main() {
 	}
 
 	index := 0
-
+	startTime := time.Now().Unix()
 	for {
 		var flt float64
 		n, err := fmt.Fscanln(data_file, &flt)
@@ -35,7 +35,7 @@ func main() {
 			break
 		}
 		point := make([]float64, 2)
-		point[0] = float64(index)
+		point[0] = float64(startTime + int64(index))
 		point[1] = flt
 		data = append(data, point)
 		index++
@@ -52,6 +52,23 @@ func main() {
 
 	dp.SetXAxisText("Time", 0)
 	dp.SetYAxisText("% of CPU", 1)
+
+	p.SetAxis2String(func(value float64) string {
+		return time.Unix(int64(value), 0).Format("15:04:05")
+
+	}, func(value float64) string {
+		return fmt.Sprintf("%f", value)
+	})
+	bp.SetAxis2String(func(value float64) string {
+		return time.Unix(int64(value), 0).Format("15:04:05")
+	}, func(value float64) string {
+		return fmt.Sprintf("%f", value)
+	})
+	dp.SetAxis2String(func(value float64) string {
+		return time.Unix(int64(value), 0).Format("15:04:05")
+	}, func(value float64) string {
+		return fmt.Sprintf("%f", value)
+	})
 
 	maxEnd := len(data) - 1
 	start := 0
